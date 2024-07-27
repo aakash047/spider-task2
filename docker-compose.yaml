@@ -15,11 +15,13 @@ services:
       retries: 10
 
   api_gateway:
+    image: lekhaaakash/api_gateway:latest
+    platform: linux/arm64
     build: ./api_gateway
     volumes:
       - ./common:/app/common
     ports:
-      - "5004:5004"
+      - "5000:5000"
     environment:
       - JWT_SECRET_KEY=your-secret-key
       - USER_SERVICE_URL=http://user_service:5001
@@ -30,6 +32,8 @@ services:
         condition: service_healthy
 
   user_service:
+    image: lekhaaakash/user_service:latest
+    platform: linux/arm64
     build: ./user_service
     volumes:
       - ./common:/app/common
@@ -44,6 +48,8 @@ services:
         condition: service_healthy
 
   product_service:
+    image: lekhaaakash/product_service:latest
+    platform: linux/arm64
     build: ./product_service
     volumes:
       - ./common:/app/common
@@ -57,6 +63,8 @@ services:
         condition: service_healthy
 
   cart_service:
+    image: lekhaaakash/cart_service:latest
+    platform: linux/arm64
     build: ./cart_service
     volumes:
       - ./common:/app/common
