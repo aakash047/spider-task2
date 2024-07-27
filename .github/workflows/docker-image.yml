@@ -31,20 +31,20 @@ jobs:
       - name: Build and push User service image
         run: |
           cd user_service
-          docker build -t $DOCKER_HUB_USERNAME/user-service:latest .
-          docker push $DOCKER_HUB_USERNAME/user-service:latest
+          docker build -t $DOCKER_HUB_USERNAME/user_service:latest .
+          docker push $DOCKER_HUB_USERNAME/user_service:latest
 
       - name: Build and push Product service image
         run: |
           cd product_service
-          docker build -t $DOCKER_HUB_USERNAME/product-service:latest .
-          docker push $DOCKER_HUB_USERNAME/product-service:latest
+          docker build -t $DOCKER_HUB_USERNAME/product_service:latest .
+          docker push $DOCKER_HUB_USERNAME/product_service:latest
 
       - name: Build and push Cart service image
         run: |
           cd cart_service
-          docker build -t $DOCKER_HUB_USERNAME/cart-service:latest .
-          docker push $DOCKER_HUB_USERNAME/cart-service:latest
+          docker build -t $DOCKER_HUB_USERNAME/cart_service:latest .
+          docker push $DOCKER_HUB_USERNAME/cart_service:latest
           
       - name: Build and push API Gateway service image
         run: |
