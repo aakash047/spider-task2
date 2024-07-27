@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ecommerce
+    volumes:
+      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  api_gateway:
+    build: ./api_gateway
+    volumes:
+      - ./common:/app/common
+    ports:
+      - "5004:5004"
+    environment:
+      - JWT_SECRET_KEY=your-secret-key
+      - USER_SERVICE_URL=http://user_service:5001
+      - PRODUCT_SERVICE_URL=http://product_service:5002
+      - CART_SERVICE_URL=http://cart_service:5003
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  user_service:
+    build: ./user_service
+    volumes:
+      - ./common:/app/common
+    environment:
+      - JWT_SECRET_KEY=your-secret-key
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=ecommerce
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  product_service:
+    build: ./product_service
+    volumes:
+      - ./common:/app/common
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=ecommerce
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  cart_service:
+    build: ./cart_service
+    volumes:
+      - ./common:/app/common
+    environment:
+      - JWT_SECRET_KEY=your-secret-key
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=ecommerce
+      - PRODUCT_SERVICE_URL=http://product_service:5002
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

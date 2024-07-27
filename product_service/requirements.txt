@@ -1,0 +1,6 @@
+flask 
+flask-jwt-extended 
+mysql-connector-python 
+requests 
+pytest
+logger_config
