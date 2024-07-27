@@ -30,18 +30,18 @@ jobs:
 
       - name: Build and push User service image
         run: |
-          cd user-service
+          cd user_service
           docker build -t $DOCKER_HUB_USERNAME/user-service:latest .
           docker push $DOCKER_HUB_USERNAME/user-service:latest
 
       - name: Build and push Product service image
         run: |
-          cd product-service
+          cd product_service
           docker build -t $DOCKER_HUB_USERNAME/product-service:latest .
           docker push $DOCKER_HUB_USERNAME/product-service:latest
 
       - name: Build and push Cart service image
         run: |
-          cd cart-service
+          cd cart_service
           docker build -t $DOCKER_HUB_USERNAME/cart-service:latest .
           docker push $DOCKER_HUB_USERNAME/cart-service:latest
