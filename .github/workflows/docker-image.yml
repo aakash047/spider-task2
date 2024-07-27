@@ -45,3 +45,9 @@ jobs:
           cd cart_service
           docker build -t $DOCKER_HUB_USERNAME/cart-service:latest .
           docker push $DOCKER_HUB_USERNAME/cart-service:latest
+          
+      - name: Build and push API Gateway service image
+        run: |
+          cd api_gateway
+          docker build -t $DOCKER_HUB_USERNAME/api_gateway:latest .
+          docker push $DOCKER_HUB_USERNAME/api_gateway:latest
