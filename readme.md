@@ -99,3 +99,48 @@ Note: While the individual services are running on ports 5001, 5002, and 5003 re
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
+
+
+## Important commands to remember
+user_service
+1. curl -X POST http://localhost:5001/register -H "Content-Type: application/json" -d '{"username": "testuser1", "password": "testpass", "email": "test1@example.com"}'
+2. curl -X POST http://localhost:5001/login -H "Content-Type: appli
+	cation/json" -d '{"username":"testuser", "password":"testpass"}'
+
+product_service
+172.23.0.5:5002 is container ip, which is got by : docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' spider-task2-product_service-1
+
+1. curl -X POST http://172.23.0.5:5002/products -H "Content-Type: application/json" -d '{
+  "name": "Test Product",
+  "description": "This is a test product",
+  "price": 10.99,
+  "stock": 100
+}'
+
+Output: {“id":1,"message":"Product added successfully"}
+
+curl -X GET http://172.23.0.5:5002/products
+
+2. curl -X PUT http://172.23.0.5:5002/products/1 -H "Content-Type: 
+application/json" -d '{
+  "name": "Updated Product",
+  "description": "This is an updated test product",
+  "price": 15.99,
+  "stock": 50
+}'
+Output: {“message":"Product updated successfully"}
+
+3.  curl -X GET http://172.23.0.5:5002/products/1
+{"created_at":"Sun, 28 Jul 2024 06:26:31 GMT","description":"This is an updated test product","id":1,"name":"Updated Product","price":"15.99","stock":50}
+4. curl -X DELETE http://172.23.0.5:5002/products/1
+{"message":"Product deleted successfully"}
+5. curl -X GET http://172.23.0.5:5002/products/1
+{"message":"Product not found"}
+
+
+cart_service:
+
+1. curl -X POST http://172.23.0.5:5003/cart/add \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMjE2NDQyMSwianRpIjoiZjMzZDhkNDgtNzliMi00MGQwLWJmNjItZGE2OTlmZTFiNjJmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3R1c2VyIiwibmJmIjoxNzIyMTY0NDIxLCJjc3JmIjoiN2I5YTJmYTMtMTQwYi00NGI3LThkYTktMGJkYjk4N2NlMmZkIiwiZXhwIjoxNzIyMTY1MzIxfQ.xutYv_sXbvysYGUy7cW318-P1yDBNBxng3MzTc7JFGA" \
+-d '{"product_id": 2, "quantity": 2}'
