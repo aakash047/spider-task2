@@ -1,5 +1,4 @@
-CREATE DATABASE ecommerce
-USE DATABASE ecommerce
+USE ecommerce;
 
 -- users.sql
 CREATE TABLE users (
@@ -21,10 +20,11 @@ CREATE TABLE products (
 );
 
 -- carts.sql
-CREATE TABLE cart_items (
+CREATE TABLE cart (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     product_id INT NOT NULL,
     quantity INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );

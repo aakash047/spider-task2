@@ -14,27 +14,12 @@ services:
       timeout: 20s
       retries: 10
 
-  api_gateway:
-    image: lekhaaakash/api_gateway:latest
-    platform: linux/arm64
-    build: ./api_gateway
-    volumes:
-      - ./common:/app/common
-    ports:
-      - "5000:5000"
-    environment:
-      - JWT_SECRET_KEY=your-secret-key
-      - USER_SERVICE_URL=http://user_service:5001
-      - PRODUCT_SERVICE_URL=http://product_service:5002
-      - CART_SERVICE_URL=http://cart_service:5003
-    depends_on:
-      mysql:
-        condition: service_healthy
-
   user_service:
-    image: lekhaaakash/user_service:latest
-    platform: linux/arm64
+    # image: lekhaaakash/user_service:latest
+    # platform: linux/arm64
     build: ./user_service
+    ports:
+      - "5001:5001"
     volumes:
       - ./common:/app/common
     environment:
@@ -48,9 +33,11 @@ services:
         condition: service_healthy
 
   product_service:
-    image: lekhaaakash/product_service:latest
-    platform: linux/arm64
+    # image: lekhaaakash/product_service:latest
+    # platform: linux/arm64
     build: ./product_service
+    expose:
+      - "5002"
     volumes:
       - ./common:/app/common
     environment:
@@ -63,9 +50,11 @@ services:
         condition: service_healthy
 
   cart_service:
-    image: lekhaaakash/cart_service:latest
-    platform: linux/arm64
+    # image: lekhaaakash/cart_service:latest
+    # platform: linux/arm64
     build: ./cart_service
+    expose:
+      - "5003"
     volumes:
       - ./common:/app/common
     environment:
@@ -78,6 +67,20 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+  nginx:
+    image: nginx:latest
+    ports:
+      - "81:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user_service
+      - product_service
+      - cart_service
 
 volumes:
   mysql_data:
+
+networks:
+  ecommerce-network:
+    driver: bridge

@@ -11,19 +11,22 @@ from mysql.connector import Error
 
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'your-secret-key')
+app.config['JWT_SECRET_KEY'] = 'your-secret-key'
 jwt = JWTManager(app)
 
 logger = setup_logger('user_service')
 
 def get_db_connection():
     try:
-        return mysql.connector.connect(
+        connection = mysql.connector.connect(
             host=os.environ.get('DB_HOST', 'localhost'),
-            user=os.environ.get('DB_USER', 'your_username'),
-            password=os.environ.get('DB_PASSWORD', 'your_password'),
-            database='ecommerce_users'
+            user=os.environ.get('DB_USER', 'aakash'),
+            password=os.environ.get('DB_PASSWORD', 'db_pass'),
+            database='ecommerce'
         )
+        if connection.is_connected():
+            logger.info("Successfully connected to the database")
+        return connection
     except Error as e:
         logger.error(f"Error connecting to the database: {e}")
         raise

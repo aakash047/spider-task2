@@ -16,7 +16,7 @@ def get_db_connection():
             host=os.environ.get('DB_HOST', 'localhost'),
             user=os.environ.get('DB_USER', 'your_username'),
             password=os.environ.get('DB_PASSWORD', 'your_password'),
-            database='ecommerce_products'
+            database='ecommerce'
         )
     except Error as e:
         logger.error(f"Error connecting to the database: {e}")
@@ -34,7 +34,7 @@ def get_products():
         return jsonify(products), 200
     except Error as e:
         logger.error(f"Database error while fetching products: {str(e)}")
-        return jsonify({"message": "An error occurred while fetching products"}), 500
+        return jsonify({"message": f"An error occurred while fetching products: {str(e)}"}), 500
     finally:
         if conn.is_connected():
             cursor.close()
