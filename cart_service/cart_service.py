@@ -44,16 +44,6 @@ def add_to_cart():
 
     logger.info(f"Adding product {product_id} to cart for user: {current_user}")
 
-    # Check product availability
-    product_response = requests.get(f"{PRODUCT_SERVICE_URL}/products/{product_id}")
-    if product_response.status_code != 200:
-        logger.warning(f"Product not found: {product_id}")
-        return jsonify({"message": "Product not found"}), 404
-
-    product = product_response.json()
-    if product['stock'] < quantity:
-        logger.warning(f"Insufficient stock for product {product_id}. Requested: {quantity}, Available: {product['stock']}")
-        return jsonify({"message": "Insufficient stock"}), 400
 
     try:
         conn = get_db_connection()
