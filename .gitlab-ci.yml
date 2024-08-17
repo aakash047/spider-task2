@@ -1,0 +1,43 @@
+stages:
+  - build
+  - push
+  - deploy
+
+variables:
+  IMAGE_TAG: "$CI_PIPELINE_IID"
+
+before_script:
+  - echo "Using Docker version:"
+  - docker --version
+
+build_images:
+  stage: build
+  script:
+    - echo 'Building Docker Images...'
+    - docker build -t lekhaaakash/user_service:$IMAGE_TAG user_service/.
+    - docker build -t lekhaaakash/product_service:$IMAGE_TAG product_service/.
+    - docker build -t lekhaaakash/cart_service:$IMAGE_TAG cart_service/.
+  tags:
+    - docker
+
+push_images:
+  stage: push
+  script:
+    - echo 'Pushing Docker Images to Docker Hub...'
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+    - docker push lekhaaakash/user_service:$IMAGE_TAG
+    - docker push lekhaaakash/product_service:$IMAGE_TAG
+    - docker push lekhaaakash/cart_service:$IMAGE_TAG
+  tags:
+    - docker
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo 'Deploying to Staging with Docker Compose...'
+    - docker-compose up -d
+  tags:
+    - docker
+
+after_script:
+  - echo "Pipeline finished!"

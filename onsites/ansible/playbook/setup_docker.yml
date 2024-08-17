@@ -1,0 +1,59 @@
+---
+- name: Install Docker and Docker Compose on Ubuntu
+  hosts: all
+  become: true
+  tasks:
+    - name: Update package index
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+
+    - name: Add Docker's official GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Install Docker Engine and CLI
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Install Docker Compose plugin
+      ansible.builtin.apt:
+        name: docker-compose-plugin
+        state: present
+
+    - name: Ensure Docker service is started and enabled
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Verify Docker installation
+      ansible.builtin.command:
+        cmd: docker --version
+      register: docker_version
+
+    - name: Print Docker version
+      ansible.builtin.debug:
+        msg: "Docker version is {{ docker_version.stdout }}"
+
+    - name: Verify Docker Compose installation
+      ansible.builtin.command:
+        cmd: docker compose version
+      register: docker_compose_version
+
+    - name: Print Docker Compose version
+      ansible.builtin.debug:
+        msg: "Docker Compose version is {{ docker_compose_version.stdout }}"
